@@ -1,0 +1,38 @@
+{
+  "name": "owav",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "dist-electron/main/index.cjs",
+  "scripts": {
+    "dev": "concurrently -k \"vite --host 127.0.0.1\" \"wait-on http://127.0.0.1:5173 && node scripts/start-electron.cjs\"",
+    "build": "tsc -b && vite build && esbuild src/main/index.ts --bundle --platform=node --format=cjs --outfile=dist-electron/main/index.cjs --external:electron --external:node:* && esbuild src/preload/index.ts --bundle --platform=node --format=cjs --outfile=dist-electron/preload/index.cjs --external:electron",
+    "preview": "vite preview",
+    "dist": "npm run build && electron-builder"
+  },
+  "dependencies": {
+    "lucide-react": "latest",
+    "react": "latest",
+    "react-dom": "latest"
+  },
+  "build": {
+    "appId": "com.owav.app",
+    "productName": "oWav",
+    "directories": { "output": "release" },
+    "files": ["dist/**/*", "dist-electron/**/*", "package.json"],
+    "win": { "target": [{ "target": "nsis", "arch": ["x64"] }], "icon": "icon.png" },
+    "nsis": { "oneClick": false, "allowToChangeInstallationDirectory": true, "createDesktopShortcut": true, "shortcutName": "oWav" }
+  },
+  "devDependencies": {
+    "electron": "latest",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^5.0.4",
+    "concurrently": "latest",
+    "electron-builder": "^26.15.3",
+    "esbuild": "latest",
+    "typescript": "latest",
+    "vite": "^7.1.7",
+    "wait-on": "latest"
+  }
+}
