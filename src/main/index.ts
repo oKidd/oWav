@@ -12,7 +12,10 @@ const run = (args: string[], onLine?: (s:string)=>void) => new Promise<string>((
 function createWindow(){
   Menu.setApplicationMenu(null);
   const appRoot = path.join(__dirname, '../..');
-  win=new BrowserWindow({title:'oWav',width:520,height:650,resizable:false,show:false,webPreferences:{preload:path.join(appRoot,'dist-electron/preload/index.cjs'),contextIsolation:true,nodeIntegration:false}});
+  win=new BrowserWindow({title:'oWav',width:520,height:650,resizable:false,frame:false,show:false,webPreferences:{preload:path.join(appRoot,'dist-electron/preload/index.cjs'),contextIsolation:true,nodeIntegration:false}});
+  ipcMain.handle('window:minimize',()=>win.minimize());
+  ipcMain.handle('window:close',()=>win.close());
+  ipcMain.handle('window:release',()=>shell.openExternal('https://github.com/oKidd/oWav/releases'));
   win.once('ready-to-show',()=>win.show());
   win.webContents.on('did-fail-load',(_,code,description)=>console.error('Renderer load failed:',code,description));
   if(process.env.OWAV_DEV) win.loadURL('http://127.0.0.1:5173');
